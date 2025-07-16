@@ -31,10 +31,14 @@ def get_db():
 
 @app.post("/reservas", response_model=schemas.ReservaOut)
 def crear_reserva(
-    reserva: schemas.ReservaCreate,
-    authorization: str = Header(None),
-    db: Session = Depends(get_db)
+        reserva: schemas.ReservaCreate,
+        authorization: str = Header(None),
+        db: Session = Depends(get_db)
 ):
+    print(f"TOKEN desde entorno: {SECRET_TOKEN}")
+    print(f"TOKEN recibido: {authorization}")
+
     if authorization != f"Bearer {SECRET_TOKEN}":
         raise HTTPException(status_code=401, detail="No autorizado")
     return crud.crear_reserva(db, reserva)
+
