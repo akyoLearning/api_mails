@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security.api_key import APIKeyHeader
 from fastapi import Security
 from app.correo_reader import leer_y_enviar_correos
+from apscheduler.schedulers.background import BackgroundScheduler
 import os
 
 api_key_header = APIKeyHeader(name="Authorization", auto_error=False)
@@ -54,3 +55,11 @@ def ejecutar_lector():
     return {"resultados": resultados}
 
 
+# Tarea programada cada 10 minutos
+def iniciar_programador():
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(leer_y_enviar_correos, 'interval', minutes=10)
+    scheduler.start()
+
+# Ejecutar al arrancar
+iniciar_programador()

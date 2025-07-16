@@ -6,4 +6,6 @@ python-multipart
 gunicorn
 requests
 imap-tools
+beautifulsoup4
+apscheduler
 
