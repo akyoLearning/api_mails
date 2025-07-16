@@ -4,6 +4,7 @@ from . import models, schemas, database, crud
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security.api_key import APIKeyHeader
 from fastapi import Security
+from app.correo_reader import leer_y_enviar_correos
 import os
 
 api_key_header = APIKeyHeader(name="Authorization", auto_error=False)
@@ -45,4 +46,11 @@ def crear_reserva(
     if authorization != f"Bearer {SECRET_TOKEN}":
         raise HTTPException(status_code=401, detail="No autorizado")
     return crud.crear_reserva(db, reserva)
+
+
+@app.get("/leer-correos")
+def ejecutar_lector():
+    resultados = leer_y_enviar_correos()
+    return {"resultados": resultados}
+
 
