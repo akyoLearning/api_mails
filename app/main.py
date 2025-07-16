@@ -2,7 +2,11 @@ from fastapi import FastAPI, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from . import models, schemas, database, crud
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security.api_key import APIKeyHeader
+from fastapi import Security
 import os
+
+api_key_header = APIKeyHeader(name="Authorization", auto_error=False)
 
 SECRET_TOKEN = os.getenv("TOKEN", "TU_TOKEN_SECRETO")
 models.Base.metadata.create_all(bind=database.engine)
@@ -31,12 +35,12 @@ def get_db():
 
 @app.post("/reservas", response_model=schemas.ReservaOut)
 def crear_reserva(
-        reserva: schemas.ReservaCreate,
-        authorization: str = Header(None),
-        db: Session = Depends(get_db)
+    reserva: schemas.ReservaCreate,
+    authorization: str = Security(api_key_header),
+    db: Session = Depends(get_db)
 ):
-    print(f"TOKEN desde entorno: {SECRET_TOKEN}")
     print(f"TOKEN recibido: {authorization}")
+    print(f"TOKEN esperado: Bearer {SECRET_TOKEN}")
 
     if authorization != f"Bearer {SECRET_TOKEN}":
         raise HTTPException(status_code=401, detail="No autorizado")
