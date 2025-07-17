@@ -43,7 +43,7 @@ def leer_y_enviar_correos():
     with MailBox(IMAP_SERVER).login(EMAIL, PASSWORD) as mailbox:
         print("✅ Conexión IMAP exitosa")
         # Modo debug: leer todos los correos (incluso leídos)
-        for msg in mailbox.fetch():
+        for msg in mailbox.fetch(AND(seen=False)):
             print(f"📬 Revisión de correo: {msg.subject}")
 
             if ASUNTO_CLAVE in msg.subject.lower():

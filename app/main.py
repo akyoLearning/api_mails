@@ -61,5 +61,6 @@ def iniciar_programador():
     scheduler.add_job(leer_y_enviar_correos, 'interval', minutes=10)
     scheduler.start()
 
+
 # Ejecutar al arrancar
 iniciar_programador()
